@@ -1,0 +1,88 @@
+<? xml version = "1.0" ?>
+<robot name= "daVinci" >
+<%
+	BASE_WIDTH = 1.5
+	BASE_LENGTH = BASE_WIDTH
+	BASE_HEIGHT = 0.2
+	BASE_MASS = 200
+
+	SUPPORT_HEIGHT = 2
+	SUPPORT_RADIUS = 0.15
+	SUPPORT_MASS = 200
+
+	SETUP_LENGTH = 0.5
+	SETUP_RADIUS = 0.1
+	SETUP_MASS = 10
+
+	BASE_X_POS = 0
+	BASE_Y_POS = 0
+	BASE_Z_POS = BASE_HEIGHT / 2
+
+	SUPPORT_X_POS = BASE_X_POS
+	SUPPORT_Y_POS = BASE_Y_POS
+	SUPPORT_Z_POS = BASE_Z_POS + (SUPPORT_HEIGHT / 2)
+
+	SETUP_1_X_POS = SUPPORT_X_POS
+	SETUP_1_Y_POS = SUPPORT_Y_POS + (SETUP_LENGTH / 2)
+	SETUP_1_Z_POS = SUPPORT_Z_POS
+
+	SETUP_2_X_POS = SUPPORT_X_POS
+	SETUP_2_Y_POS = SETUP_1_Y_POS + (SETUP_LENGTH / 2)
+	SETUP_2_Z_POS = SUPPORT_Z_POS
+
+	SETUP_3_X_POS = SUPPORT_X_POS
+	SETUP_3_Y_POS = SETUP_2_Y_POS + (SETUP_LENGTH / 2)
+	SETUP_3_Z_POS = SUPPORT_Z_POS
+%>
+	<link name = "base_link" >
+
+		<inertial>
+			<mass value = "<%= BASE_MASS + SUPPORT_MASS %>" />
+			<origin xyz = "<%= BASE_X_POS %> <%= BASE_Y_POS %> <%= BASE_Z_POS %>" rpy = "0 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "base_link_base_visual" >
+			<origin xyz = "<%= BASE_X_POS %> <%= BASE_Y_POS %> <%= BASE_Z_POS %>" rpy = "0 0 0" />
+			<geometry>
+				<box size = "<%= BASE_LENGTH %> <%= BASE_WIDTH %> <%= BASE_HEIGHT %>" />
+			</geometry>
+		</visual>
+
+		<collision name = "base_link_base_collision" >
+			<origin xyz = "<%= BASE_X_POS %> <%= BASE_Y_POS %> <%= BASE_Z_POS %>" rpy = "0 0 0" />
+			<geometry>
+				<box size = "<%= BASE_LENGTH %> <%= BASE_WIDTH %> <%= BASE_HEIGHT %>" />
+			</geometry>
+		</collision>
+
+		<visual name = "base_link_support_visual" >
+			<origin xyz = "<%= SUPPORT_X_POS %> <%= SUPPORT_Y_POS %> <%= SUPPORT_Z_POS %>" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "<%= SUPPORT_RADIUS %>" length = "<%= SUPPORT_HEIGHT %>" />
+			</geometry>
+		</visual>
+
+		<collision name = "base_link_support_collision" >
+			<origin xyz = "<%= SUPPORT_X_POS %> <%= SUPPORT_Y_POS %> <%= SUPPORT_Z_POS %>" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "<%= SUPPORT_RADIUS %>" length = "<%= SUPPORT_HEIGHT %>" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<gazebo>
+	  <static> false </static>
+	  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+	    <robotNamespace> /daVinci </robotNamespace>
+	  </plugin>
+	</gazebo>
+
+</robot>
+

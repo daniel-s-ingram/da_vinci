@@ -1,0 +1,55 @@
+<? xml version = "1.0" ?>
+<robot name= "daVinci" >
+
+	<link name = "base_link" >
+
+		<inertial>
+			<mass value = "400" />
+			<origin xyz = "0 0 0.1" rpy = "0 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "base_link_base_visual" >
+			<origin xyz = "0 0 0.1" rpy = "0 0 0" />
+			<geometry>
+				<box size = "1.5 1.5 0.2" />
+			</geometry>
+		</visual>
+
+		<collision name = "base_link_base_collision" >
+			<origin xyz = "0 0 0.1" rpy = "0 0 0" />
+			<geometry>
+				<box size = "1.5 1.5 0.2" />
+			</geometry>
+		</collision>
+
+		<visual name = "base_link_support_visual" >
+			<origin xyz = "0 0 1.1" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "0.15" length = "2" />
+			</geometry>
+		</visual>
+
+		<collision name = "base_link_support_collision" >
+			<origin xyz = "0 0 1.1" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "0.15" length = "2" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<gazebo>
+	  <static> false </static>
+	  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+	    <robotNamespace> /daVinci </robotNamespace>
+	  </plugin>
+	</gazebo>
+
+</robot>
+

@@ -1,0 +1,32 @@
+<launch>
+
+  <arg name = "paused" default = "false"/>
+  <arg name = "use_sim_time" default = "true"/>
+  <arg name = "gui" default = "true"/>
+  <arg name = "headless" default = "false"/>
+  <arg name = "debug" default = "false"/>
+  <arg name = "verbose" default = "true"/>
+
+  <include file = "$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name = "world_name" value = "$(find daVinci-sim)/world/daVinci_sim.world" />
+    <arg name = "debug" value = "$(arg debug)" />
+    <arg name = "gui" value = "$(arg gui)" />
+    <arg name = "paused" value = "$(arg paused)" />
+    <arg name = "use_sim_time" value = "$(arg use_sim_time)" />
+    <arg name = "headless" value = "$(arg headless)" />
+    <arg name = "verbose" value = "$(arg verbose)" />
+  </include>
+
+  <!-- Load the URDF into the ROS Parameter Server -->
+  <param name = "robot_description" command = "cat $(find daVinci-sim)/urdf/daVinci_model.xml" />
+
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+  <node name = "urdf_spawner" pkg = "gazebo_ros" type = "spawn_model" respawn = "false" output = "screen"
+    args = "-urdf -model daVinci -param robot_description" />
+
+  <!-- node name = "daVinci_PS4" pkg = "daVinci-sim" type = "daVinci_PS4.py" output = "screen"/ -->
+
+  <!-- ros_control daVinci launch file -->
+  <!-- include file = "$(find daVinci-sim)/launch/daVinci_control.launch"> </include -->
+  <!-- include file = "$(find daVinci-sim)/launch/daVinci_PS4.launch"> </include -->
+</launch>
