@@ -4,15 +4,18 @@
 	BASE_WIDTH = 1.5
 	BASE_LENGTH = BASE_WIDTH
 	BASE_HEIGHT = 0.2
-	BASE_MASS = 200
+	BASE_MASS = 200.0
 
-	SUPPORT_HEIGHT = 2
+	SUPPORT_HEIGHT = 2.0
 	SUPPORT_RADIUS = 0.15
-	SUPPORT_MASS = 200
+	SUPPORT_MASS = 200.0
 
-	SETUP_LENGTH = 0.5
+	SETUP_LENGTH = 1.0
 	SETUP_RADIUS = 0.1
-	SETUP_MASS = 10
+	SETUP_MASS = 10.0
+
+	HINGE_LENGTH = 3 * SETUP_RADIUS
+	HINGE_RADIUS = SETUP_RADIUS
 
 	BASE_X_POS = 0
 	BASE_Y_POS = 0
@@ -22,18 +25,75 @@
 	SUPPORT_Y_POS = BASE_Y_POS
 	SUPPORT_Z_POS = BASE_Z_POS + (SUPPORT_HEIGHT / 2)
 
-	SETUP_1_X_POS = SUPPORT_X_POS
-	SETUP_1_Y_POS = SUPPORT_Y_POS + (SETUP_LENGTH / 2)
-	SETUP_1_Z_POS = SUPPORT_Z_POS
+	SETUP1_X_POS = SUPPORT_X_POS
+	SETUP1_Y_POS = SUPPORT_Y_POS + (SETUP_LENGTH / 2)
+	SETUP1_Z_POS = SUPPORT_Z_POS
 
-	SETUP_2_X_POS = SUPPORT_X_POS
-	SETUP_2_Y_POS = SETUP_1_Y_POS + (SETUP_LENGTH / 2)
-	SETUP_2_Z_POS = SUPPORT_Z_POS
+	SETUP2_X_POS = SUPPORT_X_POS
+	SETUP2_Y_POS = SETUP1_Y_POS + (SETUP_LENGTH / 2)
+	SETUP2_Z_POS = SETUP1_Z_POS + (SETUP_RADIUS / 2)
 
-	SETUP_3_X_POS = SUPPORT_X_POS
-	SETUP_3_Y_POS = SETUP_2_Y_POS + (SETUP_LENGTH / 2)
-	SETUP_3_Z_POS = SUPPORT_Z_POS
+	SETUP3_X_POS = SUPPORT_X_POS
+	SETUP3_Y_POS = SETUP2_Y_POS + (SETUP_LENGTH / 2)
+	SETUP3_Z_POS = SUPPORT_Z_POS
 %>
+	<joint name = "setup1_joint" type = "revolute" >
+		<parent link= "base_link" />
+    	<child link= "setup1_link" />
+    	<origin xyz= "<%= SUPPORT_X_POS %> <%= SUPPORT_Y_POS %> <%= SUPPORT_Z_POS %>" rpy= "0 0 0" />
+    	<axis xyz= "0 0 1" />
+    	<limit effort= "100000" velocity= "1" lower = "-3.1416" upper = "3.1416" />
+  	</joint>
+
+  	<joint name = "setup2_joint" type = "revolute" >
+		<parent link= "setup1_link" />
+    	<child link= "setup2_link" />
+    	<origin xyz= "<%= SUPPORT_X_POS %> <%= SETUP_LENGTH %> <%= SETUP_RADIUS %>" rpy= "0 0 0" />
+    	<axis xyz= "0 0 1" />
+    	<limit effort= "100000" velocity= "1" lower = "-3.1416" upper = "3.1416" />
+  	</joint>
+
+  	<joint name = "setup3_joint" type = "revolute" >
+		<parent link= "setup2_link" />
+    	<child link= "setup3_link" />
+    	<origin xyz= "<%= SUPPORT_X_POS %> <%= SETUP_LENGTH %> <%= -SETUP_RADIUS %>" rpy= "0 0 0" />
+    	<axis xyz= "0 0 1" />
+    	<limit effort= "100000" velocity= "1" lower = "-3.1416" upper = "3.1416" />
+  	</joint>
+
+  	<transmission name="setup1_joint_transmission">
+    	<type> transmission_interface/SimpleTransmission </type>
+    	<joint name="setup1_joint">
+      		<hardwareInterface> hardware_interface/PositionJointInterface </hardwareInterface>
+    	</joint>
+    	<actuator name= "setup1_joint_motor">
+      		<hardwareInterface> PositionJointInterface </hardwareInterface>
+      		<mechanicalReduction> 1 </mechanicalReduction>
+    	</actuator>
+  	</transmission>
+
+   	<transmission name="setup2_joint_transmission">
+    	<type> transmission_interface/SimpleTransmission </type>
+    	<joint name="setup2_joint">
+      		<hardwareInterface> hardware_interface/PositionJointInterface </hardwareInterface>
+    	</joint>
+    	<actuator name= "setup2_joint_motor">
+      		<hardwareInterface> PositionJointInterface </hardwareInterface>
+      		<mechanicalReduction> 1 </mechanicalReduction>
+    	</actuator>
+  	</transmission>
+
+   	<transmission name="setup3_joint_transmission">
+    	<type> transmission_interface/SimpleTransmission </type>
+    	<joint name="setup3_joint">
+      		<hardwareInterface> hardware_interface/PositionJointInterface </hardwareInterface>
+    	</joint>
+    	<actuator name= "setup3_joint_motor">
+      		<hardwareInterface> PositionJointInterface </hardwareInterface>
+      		<mechanicalReduction> 1 </mechanicalReduction>
+    	</actuator>
+  	</transmission>
+
 	<link name = "base_link" >
 
 		<inertial>
@@ -72,6 +132,121 @@
 			<origin xyz = "<%= SUPPORT_X_POS %> <%= SUPPORT_Y_POS %> <%= SUPPORT_Z_POS %>" rpy = "0 0 0" />
 			<geometry>
 				<cylinder radius = "<%= SUPPORT_RADIUS %>" length = "<%= SUPPORT_HEIGHT %>" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<link name = "setup1_link" >
+
+		<inertial>
+			<mass value = "<%= SETUP_MASS %>" />
+			<origin xyz = "0 <%= SETUP_LENGTH / 2 %> 0" rpy = "1.5707 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "setup1_link_visual" >
+			<origin xyz = "0 <%= SETUP_LENGTH / 2 %> 0" rpy = "1.5707 0 0" />
+			<geometry>
+				<cylinder radius = "<%= SETUP_RADIUS %>" length = "<%= SETUP_LENGTH %>" />
+			</geometry>
+		</visual>
+
+		<collision name = "setup1_link_collision" >
+			<origin xyz = "0 <%= SETUP_LENGTH / 2 %> 0" rpy = "1.5707 0 0" />
+			<geometry>
+				<cylinder radius = "<%= SETUP_RADIUS %>" length = "<%= SETUP_LENGTH %>" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<link name = "setup2_link" >
+
+		<inertial>
+			<mass value = "<%= SETUP_MASS %>" />
+			<origin xyz = "0 <%= SETUP_LENGTH / 2 %> 0" rpy = "1.5707 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "setup2_link_visual" >
+			<origin xyz = "0 <%= SETUP_LENGTH / 2 %> 0" rpy = "1.5707 0 0" />
+			<geometry>
+				<cylinder radius = "<%= SETUP_RADIUS %>" length = "<%= SETUP_LENGTH %>" />
+			</geometry>
+		</visual>
+
+		<collision name = "setup2_link_collision" >
+			<origin xyz = "0 <%= SETUP_LENGTH / 2 %> 0" rpy = "1.5707 0 0" />
+			<geometry>
+				<cylinder radius = "<%= SETUP_RADIUS %>" length = "<%= SETUP_LENGTH %>" />
+			</geometry>
+		</collision>
+
+		<visual name = "setup2_link_hinge_visual" >
+			<origin xyz = "0 0 <%= -SETUP_RADIUS / 2 %>" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "<%= HINGE_RADIUS %>" length = "<%= HINGE_LENGTH %>" />
+			</geometry>
+		</visual>
+
+		<collision name = "setup2_link_hinge_collision" >
+			<origin xyz = "0 0 <%= -SETUP_RADIUS / 2 %>" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "<%= HINGE_RADIUS %>" length = "<%= HINGE_LENGTH %>" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<link name = "setup3_link" >
+
+		<inertial>
+			<mass value = "<%= SETUP_MASS %>" />
+			<origin xyz = "0 <%= SETUP_LENGTH / 2 %> 0" rpy = "1.5707 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "setup3_link_visual" >
+			<origin xyz = "0 <%= SETUP_LENGTH / 2 %> 0" rpy = "1.5707 0 0" />
+			<geometry>
+				<cylinder radius = "<%= SETUP_RADIUS %>" length = "<%= SETUP_LENGTH %>" />
+			</geometry>
+		</visual>
+
+		<collision name = "setup3_link_collision" >
+			<origin xyz = "0 <%= SETUP_LENGTH / 2 %> 0" rpy = "1.5707 0 0" />
+			<geometry>
+				<cylinder radius = "<%= SETUP_RADIUS %>" length = "<%= SETUP_LENGTH %>" />
+			</geometry>
+		</collision>
+
+		<visual name = "setup3_link_hinge_visual" >
+			<origin xyz = "0 0 <%= SETUP_RADIUS / 2 %>" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "<%= HINGE_RADIUS %>" length = "<%= HINGE_LENGTH %>" />
+			</geometry>
+		</visual>
+
+		<collision name = "setup3_link_hinge_collision" >
+			<origin xyz = "0 0 <%= SETUP_RADIUS / 2 %>" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "<%= HINGE_RADIUS %>" length = "<%= HINGE_LENGTH %>" />
 			</geometry>
 		</collision>
 

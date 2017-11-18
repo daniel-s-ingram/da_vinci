@@ -27,6 +27,6 @@
   <!-- node name = "daVinci_PS4" pkg = "daVinci-sim" type = "daVinci_PS4.py" output = "screen"/ -->
 
   <!-- ros_control daVinci launch file -->
-  <!-- include file = "$(find daVinci-sim)/launch/daVinci_control.launch"> </include -->
+  <include file = "$(find daVinci-sim)/launch/daVinci_control.launch"> </include>
   <!-- include file = "$(find daVinci-sim)/launch/daVinci_PS4.launch"> </include -->
 </launch>

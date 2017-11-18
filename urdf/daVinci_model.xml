@@ -1,10 +1,67 @@
 <? xml version = "1.0" ?>
 <robot name= "daVinci" >
 
+	<joint name = "setup1_joint" type = "revolute" >
+		<parent link= "base_link" />
+    	<child link= "setup1_link" />
+    	<origin xyz= "0 0 1.1" rpy= "0 0 0" />
+    	<axis xyz= "0 0 1" />
+    	<limit effort= "1000" velocity= "1" lower = "-3.1416" upper = "3.1416" />
+  	</joint>
+
+  	<joint name = "setup2_joint" type = "revolute" >
+		<parent link= "setup1_link" />
+    	<child link= "setup2_link" />
+    	<origin xyz= "0 1.0 0.1" rpy= "0 0 0" />
+    	<axis xyz= "0 0 1" />
+    	<limit effort= "1000" velocity= "1" lower = "-3.1416" upper = "3.1416" />
+  	</joint>
+
+  	<joint name = "setup3_joint" type = "revolute" >
+		<parent link= "setup2_link" />
+    	<child link= "setup3_link" />
+    	<origin xyz= "0 1.0 -0.1" rpy= "0 0 0" />
+    	<axis xyz= "0 0 1" />
+    	<limit effort= "1000" velocity= "1" lower = "-3.1416" upper = "3.1416" />
+  	</joint>
+
+  	<transmission name="setup1_joint_transmission">
+    	<type> transmission_interface/SimpleTransmission </type>
+    	<joint name="setup1_joint">
+      		<hardwareInterface> hardware_interface/PositionJointInterface </hardwareInterface>
+    	</joint>
+    	<actuator name= "setup1_joint_motor">
+      		<hardwareInterface> PositionJointInterface </hardwareInterface>
+      		<mechanicalReduction> 1 </mechanicalReduction>
+    	</actuator>
+  	</transmission>
+
+   	<transmission name="setup2_joint_transmission">
+    	<type> transmission_interface/SimpleTransmission </type>
+    	<joint name="setup2_joint">
+      		<hardwareInterface> hardware_interface/PositionJointInterface </hardwareInterface>
+    	</joint>
+    	<actuator name= "setup2_joint_motor">
+      		<hardwareInterface> PositionJointInterface </hardwareInterface>
+      		<mechanicalReduction> 1 </mechanicalReduction>
+    	</actuator>
+  	</transmission>
+
+   	<transmission name="setup3_joint_transmission">
+    	<type> transmission_interface/SimpleTransmission </type>
+    	<joint name="setup3_joint">
+      		<hardwareInterface> hardware_interface/PositionJointInterface </hardwareInterface>
+    	</joint>
+    	<actuator name= "setup3_joint_motor">
+      		<hardwareInterface> PositionJointInterface </hardwareInterface>
+      		<mechanicalReduction> 1 </mechanicalReduction>
+    	</actuator>
+  	</transmission>
+
 	<link name = "base_link" >
 
 		<inertial>
-			<mass value = "400" />
+			<mass value = "400.0" />
 			<origin xyz = "0 0 0.1" rpy = "0 0 0" />
 			<inertia ixx = "0"
 					 ixy = "0"
@@ -31,14 +88,129 @@
 		<visual name = "base_link_support_visual" >
 			<origin xyz = "0 0 1.1" rpy = "0 0 0" />
 			<geometry>
-				<cylinder radius = "0.15" length = "2" />
+				<cylinder radius = "0.15" length = "2.0" />
 			</geometry>
 		</visual>
 
 		<collision name = "base_link_support_collision" >
 			<origin xyz = "0 0 1.1" rpy = "0 0 0" />
 			<geometry>
-				<cylinder radius = "0.15" length = "2" />
+				<cylinder radius = "0.15" length = "2.0" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<link name = "setup1_link" >
+
+		<inertial>
+			<mass value = "10.0" />
+			<origin xyz = "0 0.5 0" rpy = "1.5707 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "setup1_link_visual" >
+			<origin xyz = "0 0.5 0" rpy = "1.5707 0 0" />
+			<geometry>
+				<cylinder radius = "0.1" length = "1.0" />
+			</geometry>
+		</visual>
+
+		<collision name = "setup1_link_collision" >
+			<origin xyz = "0 0.5 0" rpy = "1.5707 0 0" />
+			<geometry>
+				<cylinder radius = "0.1" length = "1.0" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<link name = "setup2_link" >
+
+		<inertial>
+			<mass value = "10.0" />
+			<origin xyz = "0 0.5 0" rpy = "1.5707 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "setup2_link_visual" >
+			<origin xyz = "0 0.5 0" rpy = "1.5707 0 0" />
+			<geometry>
+				<cylinder radius = "0.1" length = "1.0" />
+			</geometry>
+		</visual>
+
+		<collision name = "setup2_link_collision" >
+			<origin xyz = "0 0.5 0" rpy = "1.5707 0 0" />
+			<geometry>
+				<cylinder radius = "0.1" length = "1.0" />
+			</geometry>
+		</collision>
+
+		<visual name = "setup2_link_hinge_visual" >
+			<origin xyz = "0 0 -0.05" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "0.1" length = "0.30000000000000004" />
+			</geometry>
+		</visual>
+
+		<collision name = "setup2_link_hinge_collision" >
+			<origin xyz = "0 0 -0.05" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "0.1" length = "0.30000000000000004" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<link name = "setup3_link" >
+
+		<inertial>
+			<mass value = "10.0" />
+			<origin xyz = "0 0.5 0" rpy = "1.5707 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "setup3_link_visual" >
+			<origin xyz = "0 0.5 0" rpy = "1.5707 0 0" />
+			<geometry>
+				<cylinder radius = "0.1" length = "1.0" />
+			</geometry>
+		</visual>
+
+		<collision name = "setup3_link_collision" >
+			<origin xyz = "0 0.5 0" rpy = "1.5707 0 0" />
+			<geometry>
+				<cylinder radius = "0.1" length = "1.0" />
+			</geometry>
+		</collision>
+
+		<visual name = "setup3_link_hinge_visual" >
+			<origin xyz = "0 0 0.05" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "0.1" length = "0.30000000000000004" />
+			</geometry>
+		</visual>
+
+		<collision name = "setup3_link_hinge_collision" >
+			<origin xyz = "0 0 0.05" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "0.1" length = "0.30000000000000004" />
 			</geometry>
 		</collision>
 
