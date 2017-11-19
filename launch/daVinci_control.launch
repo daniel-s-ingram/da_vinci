@@ -8,6 +8,8 @@
     output="screen" ns="/daVinci" args="setup1_position_controller
 				                                setup2_position_controller
                                         setup3_position_controller
+                                        outer_yaw_position_controller
+                                        outer_pitch_position_controller
 				                                joint_state_controller"/>
 
   <!-- convert joint states to TF transforms for rviz, etc -->

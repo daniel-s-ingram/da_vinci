@@ -24,9 +24,8 @@
   <node name = "urdf_spawner" pkg = "gazebo_ros" type = "spawn_model" respawn = "false" output = "screen"
     args = "-urdf -model daVinci -param robot_description" />
 
-  <!-- node name = "daVinci_PS4" pkg = "daVinci-sim" type = "daVinci_PS4.py" output = "screen"/ -->
+  <node name = "daVinci_controller" pkg = "daVinci-sim" type = "daVinci_controller.py" output = "screen"/>
 
-  <!-- ros_control daVinci launch file -->
   <include file = "$(find daVinci-sim)/launch/daVinci_control.launch"> </include>
-  <!-- include file = "$(find daVinci-sim)/launch/daVinci_PS4.launch"> </include -->
+  <include file = "$(find ps3joy)/launch/ps3.launch"> </include>
 </launch>
