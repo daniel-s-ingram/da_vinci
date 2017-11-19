@@ -4,11 +4,11 @@
 	BASE_WIDTH = 1.5
 	BASE_LENGTH = BASE_WIDTH
 	BASE_HEIGHT = 0.2
-	BASE_MASS = 200.0
+	BASE_MASS = 400.0
 
 	SUPPORT_HEIGHT = 2.0
 	SUPPORT_RADIUS = 0.15
-	SUPPORT_MASS = 200.0
+	SUPPORT_MASS = 100.0
 
 	SETUP_LENGTH = 1.0
 	SETUP_RADIUS = 0.1
@@ -24,18 +24,6 @@
 	SUPPORT_X_POS = BASE_X_POS
 	SUPPORT_Y_POS = BASE_Y_POS
 	SUPPORT_Z_POS = BASE_Z_POS + (SUPPORT_HEIGHT / 2)
-
-	SETUP1_X_POS = SUPPORT_X_POS
-	SETUP1_Y_POS = SUPPORT_Y_POS + (SETUP_LENGTH / 2)
-	SETUP1_Z_POS = SUPPORT_Z_POS
-
-	SETUP2_X_POS = SUPPORT_X_POS
-	SETUP2_Y_POS = SETUP1_Y_POS + (SETUP_LENGTH / 2)
-	SETUP2_Z_POS = SETUP1_Z_POS + (SETUP_RADIUS / 2)
-
-	SETUP3_X_POS = SUPPORT_X_POS
-	SETUP3_Y_POS = SETUP2_Y_POS + (SETUP_LENGTH / 2)
-	SETUP3_Z_POS = SUPPORT_Z_POS
 %>
 	<joint name = "setup1_joint" type = "revolute" >
 		<parent link= "base_link" />
@@ -50,7 +38,7 @@
     	<child link= "setup2_link" />
     	<origin xyz= "<%= SUPPORT_X_POS %> <%= SETUP_LENGTH %> <%= SETUP_RADIUS %>" rpy= "0 0 0" />
     	<axis xyz= "0 0 1" />
-    	<limit effort= "100000" velocity= "1" lower = "-3.1416" upper = "3.1416" />
+    	<limit effort= "100000" velocity= "1" lower = "-1.5707" upper = "1.5707" />
   	</joint>
 
   	<joint name = "setup3_joint" type = "revolute" >
@@ -58,7 +46,39 @@
     	<child link= "setup3_link" />
     	<origin xyz= "<%= SUPPORT_X_POS %> <%= SETUP_LENGTH %> <%= -SETUP_RADIUS %>" rpy= "0 0 0" />
     	<axis xyz= "0 0 1" />
-    	<limit effort= "100000" velocity= "1" lower = "-3.1416" upper = "3.1416" />
+    	<limit effort= "100000" velocity= "1" lower = "-1.5707" upper = "1.5707" />
+  	</joint>
+
+  	<joint name = "outer_yaw_joint" type = "revolute" >
+		<parent link= "setup3_link" />
+    	<child link= "outer_yaw_link" />
+    	<origin xyz= "<%= SUPPORT_X_POS %> <%= (0.75 * SETUP_LENGTH) - 0.01 %> <%= 3 * SETUP_RADIUS %>" rpy= "0 0 0" />
+    	<axis xyz= "0 1 0" />
+    	<limit effort= "100000" velocity= "1" lower = "-1.0" upper = "1.0" />
+  	</joint>
+
+  	<joint name = "outer_pitch_back_joint" type = "revolute" >
+		<parent link= "outer_yaw_link" />
+    	<child link= "outer_pitch_back_link" />
+    	<origin xyz= "0 0 0" rpy= "0 0 0" />
+    	<axis xyz= "1 0 0" />
+    	<limit effort= "100000" velocity= "1" lower = "-1.5707" upper = "1.5707" />
+  	</joint>
+
+   	<joint name = "outer_pitch_middle_joint" type = "revolute" >
+		<parent link= "outer_pitch_back_link" />
+    	<child link= "outer_pitch_middle_link" />
+    	<origin xyz= "0 0 <%= ((SETUP_LENGTH / 2) - 0.02) / 4 %>" rpy= "0 0 0" />
+    	<axis xyz= "1 0 0" />
+    	<limit effort= "100000" velocity= "1" lower = "-1.5707" upper = "1.5707" />
+  	</joint>
+
+  	<joint name = "outer_pitch_front_joint" type = "revolute" >
+		<parent link= "outer_pitch_middle_link" />
+    	<child link= "outer_pitch_front_link" />
+    	<origin xyz= "0 <%= SETUP_LENGTH / 2 %> 0" rpy= "0 0 0" />
+    	<axis xyz= "1 0 0" />
+    	<limit effort= "100000" velocity= "1" lower = "-1.5707" upper = "1.5707" />
   	</joint>
 
   	<transmission name="setup1_joint_transmission">
@@ -89,6 +109,50 @@
       		<hardwareInterface> hardware_interface/PositionJointInterface </hardwareInterface>
     	</joint>
     	<actuator name= "setup3_joint_motor">
+      		<hardwareInterface> PositionJointInterface </hardwareInterface>
+      		<mechanicalReduction> 1 </mechanicalReduction>
+    	</actuator>
+  	</transmission>
+
+   	<transmission name="outer_yaw_joint_transmission">
+    	<type> transmission_interface/SimpleTransmission </type>
+    	<joint name="outer_yaw_joint">
+      		<hardwareInterface> hardware_interface/PositionJointInterface </hardwareInterface>
+    	</joint>
+    	<actuator name= "outer_yaw_joint_motor">
+      		<hardwareInterface> PositionJointInterface </hardwareInterface>
+      		<mechanicalReduction> 1 </mechanicalReduction>
+    	</actuator>
+  	</transmission>
+
+   	<transmission name="outer_pitch_back_joint_transmission">
+    	<type> transmission_interface/SimpleTransmission </type>
+    	<joint name="outer_pitch_back_joint">
+      		<hardwareInterface> hardware_interface/PositionJointInterface </hardwareInterface>
+    	</joint>
+    	<actuator name= "outer_pitch_back_joint_motor">
+      		<hardwareInterface> PositionJointInterface </hardwareInterface>
+      		<mechanicalReduction> 1 </mechanicalReduction>
+    	</actuator>
+  	</transmission>
+
+   	<transmission name="outer_pitch_middle_joint_transmission">
+    	<type> transmission_interface/SimpleTransmission </type>
+    	<joint name="outer_pitch_middle_joint">
+      		<hardwareInterface> hardware_interface/PositionJointInterface </hardwareInterface>
+    	</joint>
+    	<actuator name= "outer_pitch_middle_joint_motor">
+      		<hardwareInterface> PositionJointInterface </hardwareInterface>
+      		<mechanicalReduction> 1 </mechanicalReduction>
+    	</actuator>
+  	</transmission>
+
+   	<transmission name="outer_pitch_front_joint_transmission">
+    	<type> transmission_interface/SimpleTransmission </type>
+    	<joint name="outer_pitch_front_joint">
+      		<hardwareInterface> hardware_interface/PositionJointInterface </hardwareInterface>
+    	</joint>
+    	<actuator name= "outer_pitch_front_joint_motor">
       		<hardwareInterface> PositionJointInterface </hardwareInterface>
       		<mechanicalReduction> 1 </mechanicalReduction>
     	</actuator>
@@ -250,13 +314,176 @@
 			</geometry>
 		</collision>
 
+		<visual name = "front_outer_yaw_link_support_visual" >
+			<origin xyz = "0 <%= SETUP_LENGTH - 0.01 %> <%= 1.5 * SETUP_RADIUS %>" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "0.01" length = "<%= 3 * SETUP_RADIUS %>" />
+			</geometry>
+		</visual>
+
+		<collision name = "front_outer_yaw_link_support_collision" >
+			<origin xyz = "0 <%= SETUP_LENGTH - 0.01 %> <%= 1.5 * SETUP_RADIUS %>" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "0.01" length = "<%= 3 * SETUP_RADIUS %>" />
+			</geometry>
+		</collision>
+
+		<visual name = "back_outer_yaw_link_support_visual" >
+			<origin xyz = "0 <%= (SETUP_LENGTH / 2) - 0.01 %> <%= 1.5 * SETUP_RADIUS %>" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "0.01" length = "<%= 3 * SETUP_RADIUS %>" />
+			</geometry>
+		</visual>
+
+		<collision name = "back_outer_yaw_link_support_collision" >
+			<origin xyz = "0 <%= (SETUP_LENGTH / 2) - 0.01 %> <%= 1.5 * SETUP_RADIUS %>" rpy = "0 0 0" />
+			<geometry>
+				<cylinder radius = "0.01" length = "<%= 3 * SETUP_RADIUS %>" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<link name = "outer_yaw_link" >
+
+		<inertial>
+			<mass value = "1.0" />
+			<origin xyz = "0 0 -0.05" rpy = "0 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "outer_yaw_link_visual" >
+			<origin xyz = "0 0 -0.05" rpy = "0 0 0" />
+			<geometry>
+				<box size = "0.2 <%= (SETUP_LENGTH / 2) - 0.02 %> 0.1" />
+			</geometry>
+		</visual>
+
+		<collision name = "outer_yaw_link_collision" >
+			<origin xyz = "0 0 -0.05" rpy = "0 0 0" />
+			<geometry>
+				<box size = "0.2 <%= (SETUP_LENGTH / 2) - 0.02 %> 0.1" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<link name = "outer_pitch_back_link" >
+
+		<inertial>
+			<mass value = "1.0" />
+			<origin xyz = "0 0 <%= ((SETUP_LENGTH / 2) - 0.02) / 8 %>" rpy = "0 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "outer_pitch_back_link_visual" >
+			<origin xyz = "0 0 <%= ((SETUP_LENGTH / 2) - 0.02) / 8 %>" rpy = "0 0 0" />
+			<geometry>
+				<box size = "0.1 0.01 <%= ((SETUP_LENGTH / 2) - 0.02) / 4 %>" />
+			</geometry>
+		</visual>
+
+		<collision name = "outer_pitch_back_link_collision" >
+			<origin xyz = "0 0 <%= ((SETUP_LENGTH / 2) - 0.02) / 8 %>" rpy = "0 0 0" />
+			<geometry>
+				<box size = "0.1 0.01 <%= ((SETUP_LENGTH / 2) - 0.02) / 4 %>" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<link name = "outer_pitch_middle_link" >
+
+		<inertial>
+			<mass value = "1.0" />
+			<origin xyz = "0 <%= SETUP_LENGTH / 4 %> 0" rpy = "0 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "outer_pitch_middle_link_visual" >
+			<origin xyz = "0 <%= SETUP_LENGTH / 4 %> 0" rpy = "0 0 0" />
+			<geometry>
+				<box size = "0.1 <%= SETUP_LENGTH / 2 %> 0.01" />
+			</geometry>
+		</visual>
+
+		<collision name = "outer_pitch_middle_link_collision" >
+			<origin xyz = "0 <%= SETUP_LENGTH / 4 %> 0" rpy = "0 0 0" />
+			<geometry>
+				<box size = "0.1 <%= SETUP_LENGTH / 2 %> 0.01" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<link name = "outer_pitch_front_link" >
+
+		<inertial>
+			<mass value = "1.0" />
+			<origin xyz = "0 0 <%= 0.75 * (SETUP_LENGTH / 4) %>" rpy = "0 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "outer_pitch_middle_link_visual" >
+			<origin xyz = "0 0 <%= 0.75 * (SETUP_LENGTH / 4) %>" rpy = "0 0 0" />
+			<geometry>
+				<box size = "0.1 0.01 <%= SETUP_LENGTH / 2 %>" />
+			</geometry>
+		</visual>
+
+		<collision name = "outer_pitch_middle_link_collision" >
+			<origin xyz = "0 0 <%= 0.75 * (SETUP_LENGTH / 4) %>" rpy = "0 0 0" />
+			<geometry>
+				<box size = "0.1 0.01 <%= SETUP_LENGTH / 2 %>" />
+			</geometry>
+		</collision>
+
 	</link>
 
 	<gazebo>
+
 	  <static> false </static>
+
 	  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
 	    <robotNamespace> /daVinci </robotNamespace>
 	  </plugin>
+
+	  <plugin name = "libroboticsgroup_gazebo_mimic_joint_plugin" filename = "libroboticsgroup_gazebo_mimic_joint_plugin.so">
+	  	<robotNamespace> /daVinci </robotNamespace>
+	  	<joint> outer_pitch_back_joint </joint>
+	  	<mimicJoint> outer_pitch_middle_joint </mimicJoint>
+	  	<multiplier> -1 </multiplier>
+	  	<offset> 0 </offset>
+	  </plugin>
+
+	  <plugin name = "libroboticsgroup_gazebo_mimic_joint_plugin" filename = "libroboticsgroup_gazebo_mimic_joint_plugin.so">
+	  	<robotNamespace> /daVinci </robotNamespace>
+	  	<joint> outer_pitch_back_joint </joint>
+	  	<mimicJoint> outer_pitch_front_joint </mimicJoint>
+	  	<multiplier> 1 </multiplier>
+	  	<offset> 0 </offset>
+	  </plugin>
+	  
 	</gazebo>
 
 </robot>
