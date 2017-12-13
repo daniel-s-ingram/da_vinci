@@ -27,5 +27,11 @@
   <node name = "daVinci_controller" pkg = "daVinci-sim" type = "daVinci_controller.py" output = "screen"/>
 
   <include file = "$(find daVinci-sim)/launch/daVinci_control.launch"> </include>
-  <include file = "$(find ps3joy)/launch/ps3.launch"> </include>
+
+  <node pkg="joy" type="joy_node" name="ps4_joy" output="screen" >
+    <param name="dev" type="string" value="/dev/input/js0" />
+    <param name="deadzone" value="0.12" />
+    <param name="autorepeat_rate" value="100.0" />
+  </node>
+
 </launch>

@@ -81,6 +81,14 @@
     	<limit effort= "100000" velocity= "1" lower = "-1.5707" upper = "1.5707" />
   	</joint>
 
+  	<joint name = "insertion_joint" type = "prismatic" >
+  		<parent link = "outer_pitch_front_link" />
+  		<child link = "insertion_link" />
+  		<origin xyz = "0 0.0125 0" rpy = "0 0 0" />
+  		<axis xyz = "0 0 1" />
+  		<limit effort= "100000" velocity= "1" lower = "0" upper = "<%= SETUP_LENGTH / 3 %>" />
+  	</joint>
+
   	<transmission name="setup1_joint_transmission">
     	<type> transmission_interface/SimpleTransmission </type>
     	<joint name="setup1_joint">
@@ -158,17 +166,28 @@
     	</actuator>
   	</transmission>
 
+  	<transmission name="insertion_box_joint_transmission">
+    	<type> transmission_interface/SimpleTransmission </type>
+    	<joint name="insertion_joint">
+      		<hardwareInterface> hardware_interface/PositionJointInterface </hardwareInterface>
+    	</joint>
+    	<actuator name= "insertion_joint_motor">
+      		<hardwareInterface> PositionJointInterface </hardwareInterface>
+      		<mechanicalReduction> 1 </mechanicalReduction>
+    	</actuator>
+  	</transmission>
+
 	<link name = "base_link" >
 
 		<inertial>
 			<mass value = "<%= BASE_MASS + SUPPORT_MASS %>" />
-			<origin xyz = "<%= BASE_X_POS %> <%= BASE_Y_POS %> <%= BASE_Z_POS %>" rpy = "0 0 0" />
-			<inertia ixx = "0"
-					 ixy = "0"
-					 ixz = "0"
-					 iyy = "0"
-					 iyz = "0"
-					 izz = "0" />
+			<origin xyz = "<%= SUPPORT_X_POS %> <%= SUPPORT_Y_POS %> <%= SUPPORT_Z_POS %>" rpy = "0 0 0" />
+			<inertia ixx = "100"
+					 ixy = "100"
+					 ixz = "100"
+					 iyy = "100"
+					 iyz = "100"
+					 izz = "100" />
 		</inertial>
 
 		<visual name = "base_link_base_visual" >
@@ -444,17 +463,60 @@
 					 izz = "0" />
 		</inertial>
 
-		<visual name = "outer_pitch_middle_link_visual" >
+		<visual name = "outer_pitch_front_link_visual" >
 			<origin xyz = "0 0 <%= 0.75 * (SETUP_LENGTH / 4) %>" rpy = "0 0 0" />
 			<geometry>
 				<box size = "0.1 0.01 <%= SETUP_LENGTH / 2 %>" />
 			</geometry>
 		</visual>
 
-		<collision name = "outer_pitch_middle_link_collision" >
+		<collision name = "outer_pitch_front_link_collision" >
 			<origin xyz = "0 0 <%= 0.75 * (SETUP_LENGTH / 4) %>" rpy = "0 0 0" />
 			<geometry>
 				<box size = "0.1 0.01 <%= SETUP_LENGTH / 2 %>" />
+			</geometry>
+		</collision>
+
+	</link>
+
+	<link name = "insertion_link" >
+
+		<inertial>
+			<mass value = "0.0001" />
+			<origin xyz = "0 0.0125 0" rpy = "0 0 0" />
+			<inertia ixx = "0"
+					 ixy = "0"
+					 ixz = "0"
+					 iyy = "0"
+					 iyz = "0"
+					 izz = "0" />
+		</inertial>
+
+		<visual name = "insertion_box_link_visual" >
+			<origin xyz = "0 0.0125 0" rpy = "0 0 0" />
+			<geometry>
+				<box size = "0.075 0.025 0.1" />
+			</geometry>
+		</visual>
+
+		<collision name = "insertion_box_link_collision" >
+			<origin xyz = "0 0.0125 0" rpy = "0 0 0" />
+			<geometry>
+				<box size = "0.075 0.025 0.1" />
+			</geometry>
+		</collision>
+
+		<visual name = "insertion_rod_link_visual" >
+			<origin xyz = "0 0.0375 -0.25" rpy = "0 0 0" />
+			<geometry>
+				<cylinder length = "0.5" radius = "0.0125" />
+			</geometry>
+		</visual>
+
+		<collision name = "insertion_rod_link_collision" >
+			<origin xyz = "0 0.0375 -0.25" rpy = "0 0 0" />
+			<geometry>
+				<cylinder length = "0.5" radius = "0.0125" />
 			</geometry>
 		</collision>
 
